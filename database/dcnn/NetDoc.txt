@@ -1,0 +1,32 @@
+Document for DCNN net.
+(Noted: When add one net file, you shold write detail in this doc.)
+
+9x9:
+1. SL_G49_Go9				:  6 layers, 49 channels, 1210000 iterations.
+
+19x19:
+1. SL_G51_Go19_residual_20L_256		: 20 layers, 51 channels, 3910000 iterations. (batch 32 in training)
+1. SL_G51_Go19_residual_20L_256_v2	: 20 layers, 51 channels, 5580000 iterations. (batch 32 in training)
+2. SL_G51_Go19						: 13 layers, 51 channels, 12200000 iterations.
+3. SL_F16_Go19						: 12 layers, 16 channels, 4750000 iterations.
+4. SL_G49_Go19						: 13 layers, 49 channels, 8400000 iterations.
+
+
+Board value:
+1. BV_G49_Go19				: 13 layers, 49 channels, 3358924 iterations.
+2. BV_G50_Go19				: 13 layers, 50 channels, 6900000 iterations.
+
+Value network:
+1. VN_G50_Go19				: 13 layers, 50 channels, 5090000 iterations.
+2. VNML_G50_Go19			: 13 layers, 50 channels, 5620000 iterations.
+
+Board value & Value network:
+1. BV_VN_G50_Go19			: 13 layers, 50 channels, 16290000 iterations.
+2. BV_VNML_G50_Go19			: 13 layers, 50 channels, 14280000 iterations.
+3. BV_VNML_G50_Go19_SL_RL	: 13 layers, 50 channels, 3500000 iterations. (batch 64 in training)
+4. BV_VNML_G50_Go19_tygem	: 13 layers, 50 channels, 6895000 iterations. (batch 64 in training)
+
+RL:
+1. RL_G51_Go19_residual_20L_256	: 20 layers, 51 channels, 11400 iterations.
+2. RL_G49_Go19					: 13 layers, 49 channels, 10000 iterations.
+3. RL_G51_Go19					: 13 layers, 51 channels, 25000 iterations.

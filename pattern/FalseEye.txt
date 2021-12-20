@@ -1,0 +1,48 @@
+@  X
+@ BBw
+@XB.BX
+@ BBw
+@  X
+BlackFalseEye=DIRV4_lxuXrXdx
+
+@  X
+@ BBw
+@XB.BX
+@ wBB
+@  X
+BlackFalseEye=DIRV4_lxuXrxdX
+
+@  X
+@ wBw
+@XB.BX
+@ BBw
+@  X
+BlackFalseEye=DIRV4_lXuXrXdx
+
+@  X
+@ wBw
+@XB.BX
+@ wBw
+@  X
+BlackFalseEye=DIRV4_lXuXrXdX
+
+@  X
+@  Bw
+@  .BX
+@  BB
+@  X
+BlackFalseEye=DIRV4_lxuXrxdx
+
+@  X
+@  Bw
+@  .BX
+@  Bw
+@  X
+BlackFalseEye=DIRV4_lxuXrXdx
+
+@  X
+@  Bw
+@  .BX
+@    
+@   
+BlackFalseEye=DIRV4_lxuXrxdx

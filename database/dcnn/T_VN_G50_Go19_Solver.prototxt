@@ -1,0 +1,22 @@
+# The train/test net protocol buffer definition
+net: "database/dcnn/T_Go19_G50_VN.prototxt"
+#test_iter: 1
+#test_interval: 1
+# The base learning rate, momentum and the weight decay of the network.
+base_lr: 0.0001
+#momentum: 0
+#weight_decay: 0
+# The learning rate policy
+lr_policy: "fixed"
+#gamma: 0.5
+#stepsize: 100000
+# Display every 500 iterations
+display: 100
+# The maximum number of iterations
+max_iter: 10000000
+#snapshot intermediate results
+snapshot: 10000
+snapshot_prefix: "Snapshots_G50_VN/T_Go19_G50_VN"
+# solver mode: CPU or GPU
+solver_mode: GPU
+type: "Adam"

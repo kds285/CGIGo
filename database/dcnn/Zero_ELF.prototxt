@@ -1,0 +1,1673 @@
+name: "Zero"
+
+layer {
+  name: "data_input_layer"
+  type: "MemoryData"
+  top: "data"
+  top: "dummy_data"
+  memory_data_param { batch_size: 8 channels: 18 height: 19 width: 19 }
+}
+layer {
+  name: "SilenceLayer"
+  type: "Silence"
+  bottom: "dummy_data"
+}
+
+############### input convolution ###############
+layer {
+  name: "conv_1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "bn_1"
+  type: "BatchNorm"
+  bottom: "conv_1"
+  top: "bn_1"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "scale_1"
+  type: "Scale"
+  bottom: "bn_1"
+  top: "scale_1"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "relu_1"
+  type: "ReLU"
+  bottom: "scale_1"
+  top: "relu_1"
+}
+
+############### residual block 1 ###############
+layer {
+  name: "residual_1/conv_1"
+  type: "Convolution"
+  bottom: "relu_1"
+  top: "residual_1/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_1/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_1/conv_1"
+  top: "residual_1/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_1/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_1/bn_1/bn"
+  top: "residual_1/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_1/relu_1"
+  type: "ReLU"
+  bottom: "residual_1/bn_1/bn"
+  top: "residual_1/bn_1/bn"
+}
+layer {
+  name: "residual_1/conv_2"
+  type: "Convolution"
+  bottom: "residual_1/bn_1/bn"
+  top: "residual_1/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+	weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_1/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_1/conv_2"
+  top: "residual_1/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_1/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_1/bn_2/bn"
+  top: "residual_1/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_1/add"
+  type: "Eltwise"
+  bottom: "relu_1"
+  bottom: "residual_1/bn_2/bn"
+  top: "residual_1/add"
+}
+layer {
+  name: "residual_1/relu_2"
+  type: "ReLU"
+  bottom: "residual_1/add"
+  top: "residual_1/out"
+}
+
+############### residual block 2 ###############
+layer {
+  name: "residual_2/conv_1"
+  type: "Convolution"
+  bottom: "residual_1/out"
+  top: "residual_2/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_2/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_2/conv_1"
+  top: "residual_2/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_2/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_2/bn_1/bn"
+  top: "residual_2/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_2/relu_1"
+  type: "ReLU"
+  bottom: "residual_2/bn_1/bn"
+  top: "residual_2/bn_1/bn"
+}
+layer {
+  name: "residual_2/conv_2"
+  type: "Convolution"
+  bottom: "residual_2/bn_1/bn"
+  top: "residual_2/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_2/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_2/conv_2"
+  top: "residual_2/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_2/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_2/bn_2/bn"
+  top: "residual_2/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_2/add"
+  type: "Eltwise"
+  bottom: "residual_1/out"
+  bottom: "residual_2/bn_2/bn"
+  top: "residual_2/add"
+}
+layer {
+  name: "residual_2/relu_2"
+  type: "ReLU"
+  bottom: "residual_2/add"
+  top: "residual_2/out"
+}
+
+############### residual block 3 ###############
+layer {
+  name: "residual_3/conv_1"
+  type: "Convolution"
+  bottom: "residual_2/out"
+  top: "residual_3/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_3/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_3/conv_1"
+  top: "residual_3/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_3/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_3/bn_1/bn"
+  top: "residual_3/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_3/relu_1"
+  type: "ReLU"
+  bottom: "residual_3/bn_1/bn"
+  top: "residual_3/bn_1/bn"
+}
+layer {
+  name: "residual_3/conv_2"
+  type: "Convolution"
+  bottom: "residual_3/bn_1/bn"
+  top: "residual_3/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_3/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_3/conv_2"
+  top: "residual_3/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_3/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_3/bn_2/bn"
+  top: "residual_3/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_3/add"
+  type: "Eltwise"
+  bottom: "residual_2/out"
+  bottom: "residual_3/bn_2/bn"
+  top: "residual_3/add"
+}
+layer {
+  name: "residual_3/relu_2"
+  type: "ReLU"
+  bottom: "residual_3/add"
+  top: "residual_3/out"
+}
+
+############### residual block 4 ###############
+layer {
+  name: "residual_4/conv_1"
+  type: "Convolution"
+  bottom: "residual_3/out"
+  top: "residual_4/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_4/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_4/conv_1"
+  top: "residual_4/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_4/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_4/bn_1/bn"
+  top: "residual_4/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_4/relu_1"
+  type: "ReLU"
+  bottom: "residual_4/bn_1/bn"
+  top: "residual_4/bn_1/bn"
+}
+layer {
+  name: "residual_4/conv_2"
+  type: "Convolution"
+  bottom: "residual_4/bn_1/bn"
+  top: "residual_4/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_4/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_4/conv_2"
+  top: "residual_4/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_4/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_4/bn_2/bn"
+  top: "residual_4/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_4/add"
+  type: "Eltwise"
+  bottom: "residual_3/out"
+  bottom: "residual_4/bn_2/bn"
+  top: "residual_4/add"
+}
+layer {
+  name: "residual_4/relu_2"
+  type: "ReLU"
+  bottom: "residual_4/add"
+  top: "residual_4/out"
+}
+
+############### residual block 5 ###############
+layer {
+  name: "residual_5/conv_1"
+  type: "Convolution"
+  bottom: "residual_4/out"
+  top: "residual_5/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_5/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_5/conv_1"
+  top: "residual_5/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_5/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_5/bn_1/bn"
+  top: "residual_5/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_5/relu_1"
+  type: "ReLU"
+  bottom: "residual_5/bn_1/bn"
+  top: "residual_5/bn_1/bn"
+}
+layer {
+  name: "residual_5/conv_2"
+  type: "Convolution"
+  bottom: "residual_5/bn_1/bn"
+  top: "residual_5/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_5/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_5/conv_2"
+  top: "residual_5/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_5/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_5/bn_2/bn"
+  top: "residual_5/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_5/add"
+  type: "Eltwise"
+  bottom: "residual_4/out"
+  bottom: "residual_5/bn_2/bn"
+  top: "residual_5/add"
+}
+layer {
+  name: "residual_5/relu_2"
+  type: "ReLU"
+  bottom: "residual_5/add"
+  top: "residual_5/out"
+}
+
+############### residual block 6 ###############
+layer {
+  name: "residual_6/conv_1"
+  type: "Convolution"
+  bottom: "residual_5/out"
+  top: "residual_6/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_6/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_6/conv_1"
+  top: "residual_6/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_6/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_6/bn_1/bn"
+  top: "residual_6/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_6/relu_1"
+  type: "ReLU"
+  bottom: "residual_6/bn_1/bn"
+  top: "residual_6/bn_1/bn"
+}
+layer {
+  name: "residual_6/conv_2"
+  type: "Convolution"
+  bottom: "residual_6/bn_1/bn"
+  top: "residual_6/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_6/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_6/conv_2"
+  top: "residual_6/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_6/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_6/bn_2/bn"
+  top: "residual_6/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_6/add"
+  type: "Eltwise"
+  bottom: "residual_5/out"
+  bottom: "residual_6/bn_2/bn"
+  top: "residual_6/add"
+}
+layer {
+  name: "residual_6/relu_2"
+  type: "ReLU"
+  bottom: "residual_6/add"
+  top: "residual_6/out"
+}
+
+############### residual block 7 ###############
+layer {
+  name: "residual_7/conv_1"
+  type: "Convolution"
+  bottom: "residual_6/out"
+  top: "residual_7/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_7/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_7/conv_1"
+  top: "residual_7/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_7/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_7/bn_1/bn"
+  top: "residual_7/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_7/relu_1"
+  type: "ReLU"
+  bottom: "residual_7/bn_1/bn"
+  top: "residual_7/bn_1/bn"
+}
+layer {
+  name: "residual_7/conv_2"
+  type: "Convolution"
+  bottom: "residual_7/bn_1/bn"
+  top: "residual_7/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_7/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_7/conv_2"
+  top: "residual_7/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_7/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_7/bn_2/bn"
+  top: "residual_7/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_7/add"
+  type: "Eltwise"
+  bottom: "residual_6/out"
+  bottom: "residual_7/bn_2/bn"
+  top: "residual_7/add"
+}
+layer {
+  name: "residual_7/relu_2"
+  type: "ReLU"
+  bottom: "residual_7/add"
+  top: "residual_7/out"
+}
+
+############### residual block 8 ###############
+layer {
+  name: "residual_8/conv_1"
+  type: "Convolution"
+  bottom: "residual_7/out"
+  top: "residual_8/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_8/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_8/conv_1"
+  top: "residual_8/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_8/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_8/bn_1/bn"
+  top: "residual_8/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_8/relu_1"
+  type: "ReLU"
+  bottom: "residual_8/bn_1/bn"
+  top: "residual_8/bn_1/bn"
+}
+layer {
+  name: "residual_8/conv_2"
+  type: "Convolution"
+  bottom: "residual_8/bn_1/bn"
+  top: "residual_8/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_8/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_8/conv_2"
+  top: "residual_8/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_8/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_8/bn_2/bn"
+  top: "residual_8/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_8/add"
+  type: "Eltwise"
+  bottom: "residual_7/out"
+  bottom: "residual_8/bn_2/bn"
+  top: "residual_8/add"
+}
+layer {
+  name: "residual_8/relu_2"
+  type: "ReLU"
+  bottom: "residual_8/add"
+  top: "residual_8/out"
+}
+
+############### residual block 9 ###############
+layer {
+  name: "residual_9/conv_1"
+  type: "Convolution"
+  bottom: "residual_8/out"
+  top: "residual_9/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_9/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_9/conv_1"
+  top: "residual_9/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_9/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_9/bn_1/bn"
+  top: "residual_9/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_9/relu_1"
+  type: "ReLU"
+  bottom: "residual_9/bn_1/bn"
+  top: "residual_9/bn_1/bn"
+}
+layer {
+  name: "residual_9/conv_2"
+  type: "Convolution"
+  bottom: "residual_9/bn_1/bn"
+  top: "residual_9/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_9/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_9/conv_2"
+  top: "residual_9/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_9/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_9/bn_2/bn"
+  top: "residual_9/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_9/add"
+  type: "Eltwise"
+  bottom: "residual_8/out"
+  bottom: "residual_9/bn_2/bn"
+  top: "residual_9/add"
+}
+layer {
+  name: "residual_9/relu_2"
+  type: "ReLU"
+  bottom: "residual_9/add"
+  top: "residual_9/out"
+}
+
+############### residual block 10 ###############
+layer {
+  name: "residual_10/conv_1"
+  type: "Convolution"
+  bottom: "residual_9/out"
+  top: "residual_10/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_10/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_10/conv_1"
+  top: "residual_10/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_10/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_10/bn_1/bn"
+  top: "residual_10/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_10/relu_1"
+  type: "ReLU"
+  bottom: "residual_10/bn_1/bn"
+  top: "residual_10/bn_1/bn"
+}
+layer {
+  name: "residual_10/conv_2"
+  type: "Convolution"
+  bottom: "residual_10/bn_1/bn"
+  top: "residual_10/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_10/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_10/conv_2"
+  top: "residual_10/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_10/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_10/bn_2/bn"
+  top: "residual_10/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_10/add"
+  type: "Eltwise"
+  bottom: "residual_9/out"
+  bottom: "residual_10/bn_2/bn"
+  top: "residual_10/add"
+}
+layer {
+  name: "residual_10/relu_2"
+  type: "ReLU"
+  bottom: "residual_10/add"
+  top: "residual_10/out"
+}
+
+############### residual block 11 ###############
+layer {
+  name: "residual_11/conv_1"
+  type: "Convolution"
+  bottom: "residual_10/out"
+  top: "residual_11/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_11/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_11/conv_1"
+  top: "residual_11/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_11/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_11/bn_1/bn"
+  top: "residual_11/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_11/relu_1"
+  type: "ReLU"
+  bottom: "residual_11/bn_1/bn"
+  top: "residual_11/bn_1/bn"
+}
+layer {
+  name: "residual_11/conv_2"
+  type: "Convolution"
+  bottom: "residual_11/bn_1/bn"
+  top: "residual_11/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_11/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_11/conv_2"
+  top: "residual_11/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_11/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_11/bn_2/bn"
+  top: "residual_11/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_11/add"
+  type: "Eltwise"
+  bottom: "residual_10/out"
+  bottom: "residual_11/bn_2/bn"
+  top: "residual_11/add"
+}
+layer {
+  name: "residual_11/relu_2"
+  type: "ReLU"
+  bottom: "residual_11/add"
+  top: "residual_11/out"
+}
+
+############### residual block 12 ###############
+layer {
+  name: "residual_12/conv_1"
+  type: "Convolution"
+  bottom: "residual_11/out"
+  top: "residual_12/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_12/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_12/conv_1"
+  top: "residual_12/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_12/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_12/bn_1/bn"
+  top: "residual_12/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_12/relu_1"
+  type: "ReLU"
+  bottom: "residual_12/bn_1/bn"
+  top: "residual_12/bn_1/bn"
+}
+layer {
+  name: "residual_12/conv_2"
+  type: "Convolution"
+  bottom: "residual_12/bn_1/bn"
+  top: "residual_12/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_12/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_12/conv_2"
+  top: "residual_12/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_12/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_12/bn_2/bn"
+  top: "residual_12/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_12/add"
+  type: "Eltwise"
+  bottom: "residual_11/out"
+  bottom: "residual_12/bn_2/bn"
+  top: "residual_12/add"
+}
+layer {
+  name: "residual_12/relu_2"
+  type: "ReLU"
+  bottom: "residual_12/add"
+  top: "residual_12/out"
+}
+
+############### residual block 13 ###############
+layer {
+  name: "residual_13/conv_1"
+  type: "Convolution"
+  bottom: "residual_12/out"
+  top: "residual_13/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_13/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_13/conv_1"
+  top: "residual_13/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_13/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_13/bn_1/bn"
+  top: "residual_13/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_13/relu_1"
+  type: "ReLU"
+  bottom: "residual_13/bn_1/bn"
+  top: "residual_13/bn_1/bn"
+}
+layer {
+  name: "residual_13/conv_2"
+  type: "Convolution"
+  bottom: "residual_13/bn_1/bn"
+  top: "residual_13/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_13/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_13/conv_2"
+  top: "residual_13/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_13/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_13/bn_2/bn"
+  top: "residual_13/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_13/add"
+  type: "Eltwise"
+  bottom: "residual_12/out"
+  bottom: "residual_13/bn_2/bn"
+  top: "residual_13/add"
+}
+layer {
+  name: "residual_13/relu_2"
+  type: "ReLU"
+  bottom: "residual_13/add"
+  top: "residual_13/out"
+}
+
+############### residual block 14 ###############
+layer {
+  name: "residual_14/conv_1"
+  type: "Convolution"
+  bottom: "residual_13/out"
+  top: "residual_14/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_14/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_14/conv_1"
+  top: "residual_14/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_14/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_14/bn_1/bn"
+  top: "residual_14/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_14/relu_1"
+  type: "ReLU"
+  bottom: "residual_14/bn_1/bn"
+  top: "residual_14/bn_1/bn"
+}
+layer {
+  name: "residual_14/conv_2"
+  type: "Convolution"
+  bottom: "residual_14/bn_1/bn"
+  top: "residual_14/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_14/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_14/conv_2"
+  top: "residual_14/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_14/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_14/bn_2/bn"
+  top: "residual_14/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_14/add"
+  type: "Eltwise"
+  bottom: "residual_13/out"
+  bottom: "residual_14/bn_2/bn"
+  top: "residual_14/add"
+}
+layer {
+  name: "residual_14/relu_2"
+  type: "ReLU"
+  bottom: "residual_14/add"
+  top: "residual_14/out"
+}
+
+############### residual block 15 ###############
+layer {
+  name: "residual_15/conv_1"
+  type: "Convolution"
+  bottom: "residual_14/out"
+  top: "residual_15/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_15/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_15/conv_1"
+  top: "residual_15/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_15/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_15/bn_1/bn"
+  top: "residual_15/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_15/relu_1"
+  type: "ReLU"
+  bottom: "residual_15/bn_1/bn"
+  top: "residual_15/bn_1/bn"
+}
+layer {
+  name: "residual_15/conv_2"
+  type: "Convolution"
+  bottom: "residual_15/bn_1/bn"
+  top: "residual_15/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_15/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_15/conv_2"
+  top: "residual_15/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_15/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_15/bn_2/bn"
+  top: "residual_15/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_15/add"
+  type: "Eltwise"
+  bottom: "residual_14/out"
+  bottom: "residual_15/bn_2/bn"
+  top: "residual_15/add"
+}
+layer {
+  name: "residual_15/relu_2"
+  type: "ReLU"
+  bottom: "residual_15/add"
+  top: "residual_15/out"
+}
+
+############### residual block 16 ###############
+layer {
+  name: "residual_16/conv_1"
+  type: "Convolution"
+  bottom: "residual_15/out"
+  top: "residual_16/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_16/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_16/conv_1"
+  top: "residual_16/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_16/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_16/bn_1/bn"
+  top: "residual_16/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_16/relu_1"
+  type: "ReLU"
+  bottom: "residual_16/bn_1/bn"
+  top: "residual_16/bn_1/bn"
+}
+layer {
+  name: "residual_16/conv_2"
+  type: "Convolution"
+  bottom: "residual_16/bn_1/bn"
+  top: "residual_16/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_16/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_16/conv_2"
+  top: "residual_16/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_16/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_16/bn_2/bn"
+  top: "residual_16/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_16/add"
+  type: "Eltwise"
+  bottom: "residual_15/out"
+  bottom: "residual_16/bn_2/bn"
+  top: "residual_16/add"
+}
+layer {
+  name: "residual_16/relu_2"
+  type: "ReLU"
+  bottom: "residual_16/add"
+  top: "residual_16/out"
+}
+
+############### residual block 17 ###############
+layer {
+  name: "residual_17/conv_1"
+  type: "Convolution"
+  bottom: "residual_16/out"
+  top: "residual_17/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_17/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_17/conv_1"
+  top: "residual_17/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_17/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_17/bn_1/bn"
+  top: "residual_17/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_17/relu_1"
+  type: "ReLU"
+  bottom: "residual_17/bn_1/bn"
+  top: "residual_17/bn_1/bn"
+}
+layer {
+  name: "residual_17/conv_2"
+  type: "Convolution"
+  bottom: "residual_17/bn_1/bn"
+  top: "residual_17/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_17/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_17/conv_2"
+  top: "residual_17/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_17/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_17/bn_2/bn"
+  top: "residual_17/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_17/add"
+  type: "Eltwise"
+  bottom: "residual_16/out"
+  bottom: "residual_17/bn_2/bn"
+  top: "residual_17/add"
+}
+layer {
+  name: "residual_17/relu_2"
+  type: "ReLU"
+  bottom: "residual_17/add"
+  top: "residual_17/out"
+}
+
+############### residual block 18 ###############
+layer {
+  name: "residual_18/conv_1"
+  type: "Convolution"
+  bottom: "residual_17/out"
+  top: "residual_18/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_18/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_18/conv_1"
+  top: "residual_18/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_18/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_18/bn_1/bn"
+  top: "residual_18/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_18/relu_1"
+  type: "ReLU"
+  bottom: "residual_18/bn_1/bn"
+  top: "residual_18/bn_1/bn"
+}
+layer {
+  name: "residual_18/conv_2"
+  type: "Convolution"
+  bottom: "residual_18/bn_1/bn"
+  top: "residual_18/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_18/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_18/conv_2"
+  top: "residual_18/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_18/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_18/bn_2/bn"
+  top: "residual_18/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_18/add"
+  type: "Eltwise"
+  bottom: "residual_17/out"
+  bottom: "residual_18/bn_2/bn"
+  top: "residual_18/add"
+}
+layer {
+  name: "residual_18/relu_2"
+  type: "ReLU"
+  bottom: "residual_18/add"
+  top: "residual_18/out"
+}
+
+############### residual block 19 ###############
+layer {
+  name: "residual_19/conv_1"
+  type: "Convolution"
+  bottom: "residual_18/out"
+  top: "residual_19/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_19/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_19/conv_1"
+  top: "residual_19/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_19/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_19/bn_1/bn"
+  top: "residual_19/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_19/relu_1"
+  type: "ReLU"
+  bottom: "residual_19/bn_1/bn"
+  top: "residual_19/bn_1/bn"
+}
+layer {
+  name: "residual_19/conv_2"
+  type: "Convolution"
+  bottom: "residual_19/bn_1/bn"
+  top: "residual_19/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_19/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_19/conv_2"
+  top: "residual_19/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_19/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_19/bn_2/bn"
+  top: "residual_19/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_19/add"
+  type: "Eltwise"
+  bottom: "residual_18/out"
+  bottom: "residual_19/bn_2/bn"
+  top: "residual_19/add"
+}
+layer {
+  name: "residual_19/relu_2"
+  type: "ReLU"
+  bottom: "residual_19/add"
+  top: "residual_19/out"
+}
+
+############### residual block 20 ###############
+layer {
+  name: "residual_20/conv_1"
+  type: "Convolution"
+  bottom: "residual_19/out"
+  top: "residual_20/conv_1"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_20/bn_1/bn"
+  type: "BatchNorm"
+  bottom: "residual_20/conv_1"
+  top: "residual_20/bn_1/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_20/bn_1/scale"
+  type: "Scale"
+  bottom: "residual_20/bn_1/bn"
+  top: "residual_20/bn_1/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_20/relu_1"
+  type: "ReLU"
+  bottom: "residual_20/bn_1/bn"
+  top: "residual_20/bn_1/bn"
+}
+layer {
+  name: "residual_20/conv_2"
+  type: "Convolution"
+  bottom: "residual_20/bn_1/bn"
+  top: "residual_20/conv_2"
+  convolution_param { num_output: 224 pad: 1 kernel_size: 3 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "residual_20/bn_2/bn"
+  type: "BatchNorm"
+  bottom: "residual_20/conv_2"
+  top: "residual_20/bn_2/bn"
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  param { lr_mult: 0.0 decay_mult: 0.0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "residual_20/bn_2/scale"
+  type: "Scale"
+  bottom: "residual_20/bn_2/bn"
+  top: "residual_20/bn_2/bn"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "residual_20/add"
+  type: "Eltwise"
+  bottom: "residual_19/out"
+  bottom: "residual_20/bn_2/bn"
+  top: "residual_20/add"
+}
+layer {
+  name: "residual_20/relu_2"
+  type: "ReLU"
+  bottom: "residual_20/add"
+  top: "residual_20/out"
+}
+
+############### SL move ###############
+layer {
+  name: "move_conv"
+  type: "Convolution"
+  bottom: "residual_20/out"
+  top: "move_conv"
+  convolution_param { num_output: 2 pad: 0 kernel_size: 1 stride: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "BatchNorm_move1"
+  type: "BatchNorm"
+  bottom: "move_conv"
+  top: "move1_bn"
+  param { lr_mult: 0 decay_mult: 0 }
+  param { lr_mult: 0 decay_mult: 0 }
+  param { lr_mult: 0 decay_mult: 0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "Scale_move1"
+  type: "Scale"
+  bottom: "move1_bn"
+  top: "move1_scale"
+  scale_param { bias_term: true }
+}
+layer {
+  name: "move_relu"
+  type: "ReLU"
+  bottom: "move1_scale"
+  top: "move_relu"
+}
+layer {
+  name: "move_inner"
+  type: "InnerProduct"
+  bottom: "move_relu"
+  top: "move_inner"
+  inner_product_param { num_output: 362
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "flatten_sl_move"
+  type: "Flatten"
+  bottom: "move_inner"
+  top: "flatten_sl_move"
+}
+layer {
+  name: "softmax"
+  type: "Softmax"
+  bottom: "flatten_sl_move"
+  top: "softmax"
+}
+
+############### VN ###############
+layer {
+  name: "VN_conv"
+  type: "Convolution"
+  bottom: "residual_20/out"
+  top: "VN_conv"
+  convolution_param { num_output: 1 pad: 0 kernel_size: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "VN_bn"
+  type: "BatchNorm"
+  bottom: "VN_conv"
+  top: "VN_bn"
+  param { lr_mult: 0 decay_mult: 0 }
+  param { lr_mult: 0 decay_mult: 0 }
+  param { lr_mult: 0 decay_mult: 0 }
+  batch_norm_param { use_global_stats: true }
+}
+layer {
+  name: "VN_Scale"
+  type: "Scale"
+  bottom: "VN_bn"
+  top: "VN_Scale"
+  scale_param { bias_term: true }
+}
+layer {
+ name: "VN_relu1"
+ type: "ReLU"
+ bottom: "VN_Scale"
+ top: "VN_relu1"
+}
+layer {
+  name: "VN_IP1"
+  type: "InnerProduct"
+  bottom: "VN_relu1"
+  top: "VN_IP1"
+  inner_product_param { num_output: 256
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "VN_relu2"
+  type: "ReLU"
+  bottom: "VN_IP1"
+  top: "VN_relu2"
+}
+layer {
+  name: "VN_IP2"
+  type: "InnerProduct"
+  bottom: "VN_relu2"
+  top: "VN_IP2"
+  inner_product_param { num_output: 1
+    weight_filler { type: "xavier" }
+    bias_filler { type: "constant" }
+  }
+}
+layer {
+  name: "VN_tanh"
+  type: "TanH"
+  bottom: "VN_IP2"
+  top: "tanh"
+}
